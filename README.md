@@ -5,7 +5,7 @@ This repository contains the exercises from the Full Stack Open course organized
 ## Repository Structure
 
 - `Part_0`: Fundamentals of Web apps
-- `Part_1`: Fundamentals of Web apps
+- `Part_1`: Introduction to React
   - courseinfo
   - part1: Introduction example from the course
 - ...
