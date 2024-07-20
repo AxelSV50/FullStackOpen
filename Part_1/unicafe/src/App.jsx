@@ -54,14 +54,16 @@ const App = () => {
         return (
             <>
              <h2>Statistics</h2>
-              <p>
-                <StatisticLine text="Good: " value={good}/>
-                <StatisticLine text="Bad: " value={bad}/>
-                <StatisticLine text="Neutral: " value={neutral}/>
-                <StatisticLine text="All: " value={total}/>
-                <StatisticLine text="Average: " value={getAverage()}/>
-                <StatisticLine text="Positive feedback: " value={getPositivePercent()}/>  
-             </p>
+                <table border= "1">
+                    <tbody>
+                        <StatisticLine text="Good " value={good}/>
+                        <StatisticLine text="Neutral " value={neutral}/>
+                        <StatisticLine text="Bad " value={bad}/>
+                        <StatisticLine text="All " value={total}/>
+                        <StatisticLine text="Average " value={getAverage()}/>
+                        <StatisticLine text="Positive feedback " value={getPositivePercent()}/>  
+                    </tbody>
+                </table>
            </>
         )
     }
@@ -69,9 +71,10 @@ const App = () => {
 
   const StatisticLine = ({text, value}) => {
       return (
-          <div>
-              <p>{text} {value}</p>
-          </div>
+          <tr>
+              <td>{text}</td>
+              <td>{value}</td>
+          </tr>
       )
   }
   const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
