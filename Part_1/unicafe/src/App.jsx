@@ -42,18 +42,29 @@ const App = () => {
         return ((good/total)*100) + " %"
       }
     }
-    return (
-       <>
-            <h2>Statistics</h2>
-            <p>
-                Good: {good} <br/>
-                Neutral: {neutral} <br/>
-                Bad: {bad} <br/>
-                All: {total} <br/>
-                Average: {getAverage()} <br/>
-                Positive feedback: {getPositivePercent()}
-            </p>
-      </>
-    )
+
+    if(total === 0){
+        return (
+            <>
+              <h2>Statistics</h2>
+              <p>No feedback given</p>
+            </>
+        )
+    }else{
+        return (
+            <>
+             <h2>Statistics</h2>
+              <p>
+                 Good: {good} <br/>
+                 Neutral: {neutral} <br/>
+                 Bad: {bad} <br/>
+                 All: {total} <br/>
+                 Average: {getAverage()} <br/>
+                 Positive feedback: {getPositivePercent()}   
+             </p>
+           </>
+         )
+    }
+    
   }
 export default App
