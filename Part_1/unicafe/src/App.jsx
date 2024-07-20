@@ -15,9 +15,9 @@ const App = () => {
     return (
       <div>
         <h1>Give feedback</h1>
-        <button onClick={handlerGood}>good</button>
-        <button onClick={handlerNeutral}>neutral</button>
-        <button onClick={handlerBad}>bad</button>
+        <Button onClick={handlerGood} text="good" />
+        <Button onClick={handlerNeutral} text="neutral" />
+        <Button onClick={handlerBad} text="bad" />
         <Statistics good={good} neutral={neutral} bad={bad}/>
       </div>
     )
@@ -55,16 +55,25 @@ const App = () => {
             <>
              <h2>Statistics</h2>
               <p>
-                 Good: {good} <br/>
-                 Neutral: {neutral} <br/>
-                 Bad: {bad} <br/>
-                 All: {total} <br/>
-                 Average: {getAverage()} <br/>
-                 Positive feedback: {getPositivePercent()}   
+                <StatisticLine text="Good: " value={good}/>
+                <StatisticLine text="Bad: " value={bad}/>
+                <StatisticLine text="Neutral: " value={neutral}/>
+                <StatisticLine text="All: " value={total}/>
+                <StatisticLine text="Average: " value={getAverage()}/>
+                <StatisticLine text="Positive feedback: " value={getPositivePercent()}/>  
              </p>
            </>
-         )
+        )
     }
-    
   }
+
+  const StatisticLine = ({text, value}) => {
+      return (
+          <div>
+              <p>{text} {value}</p>
+          </div>
+      )
+  }
+  const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
+
 export default App
