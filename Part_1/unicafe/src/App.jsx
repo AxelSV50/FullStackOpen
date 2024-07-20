@@ -10,9 +10,23 @@ const App = () => {
   
     const handlerGood = () => setGood(good + 1)
     const handlerNeutral = () => setNeutral(neutral + 1)
-    const handlerBad = () => setBad(bad + 1)
+    const handlerBad = () => setBad(bad + 1)   
+
+    return (
+      <div>
+        <h1>Give feedback</h1>
+        <button onClick={handlerGood}>good</button>
+        <button onClick={handlerNeutral}>neutral</button>
+        <button onClick={handlerBad}>bad</button>
+        <Statistics good={good} neutral={neutral} bad={bad}/>
+      </div>
+    )
+  }
+
+  const Statistics = ({good, neutral, bad}) => {
 
     const total = good+bad+neutral
+
     const getAverage = () => {
         if (total === 0) {
             return 0 
@@ -28,25 +42,18 @@ const App = () => {
         return ((good/total)*100) + " %"
       }
     }
-
     return (
-      <div>
-        <h1>give feedback</h1>
-        <button onClick={handlerGood}>good</button>
-        <button onClick={handlerNeutral}>neutral</button>
-        <button onClick={handlerBad}>bad</button>
-        <h2>Statistics</h2>
-        <p>
-            Good: {good} <br/>
-            Neutral: {neutral} <br/>
-            Bad: {bad} <br/>
-            All: {total} <br/>
-            Average: {getAverage()} <br/>
-            Positive feedback: {getPositivePercent()}
-        </p>
-
-      </div>
+       <>
+            <h2>Statistics</h2>
+            <p>
+                Good: {good} <br/>
+                Neutral: {neutral} <br/>
+                Bad: {bad} <br/>
+                All: {total} <br/>
+                Average: {getAverage()} <br/>
+                Positive feedback: {getPositivePercent()}
+            </p>
+      </>
     )
   }
-
 export default App
