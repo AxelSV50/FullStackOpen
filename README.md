@@ -10,6 +10,8 @@ This repository contains the exercises from the Full Stack Open course organized
   - courseinfo
   - unicafe
   - part1: Introduction example from the course
+- `Part_2`: Communicating with server
+  - courseinfo
 - ...
 
 Each folder has the exercises from each part. In some cases, they will have their own README to explain how to run the exercises if it is necessary.
