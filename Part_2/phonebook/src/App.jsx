@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -9,25 +9,46 @@ const App = () => {
   const [nameSearch, setNameSearch] = useState('')
 
   useEffect(() =>{
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response)=>{
-        setPersons(response.data)
-      })
+    personService.getAll().then(persons => setPersons(persons))
   }, [])
-  const handleAddName = (e) =>{
+  const addNewPerson = (e) =>{
 
     e.preventDefault()
 
-    if (!persons.find(p => p.name === newName)){
+    const p = persons.find(p => p.name === newName)
 
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setNewName('')
-      setNewNumber('')
-      e.target.reset()
+    if (!p){
 
+      const newPerson = {name: newName, number: newNumber}
+
+      personService
+      .create(newPerson)
+      .then(personAdded =>{
+        setPersons(persons.concat(personAdded))
+        setNewName('')
+        setNewNumber('')
+        e.target.reset()
+      })
+      .catch(error =>{
+        alert(`Error: ${error}`)
+      }     
+    )
     }else{
-      alert(`${newName} is already added to phonebook`);
+
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+
+        const updatedPerson = {name: newName, number: newNumber, id:p.id}
+        personService
+        .update(p.id, updatedPerson)
+        .then(() => {
+
+          setPersons(persons.map(value =>value.id === p.id ? updatedPerson: value))
+          setNewName('')
+          setNewNumber('')
+          e.target.reset()
+
+          })
+      }
     }
 
   }
@@ -46,9 +67,28 @@ const App = () => {
     return true
   }
 
+  const deletePerson = (p) =>{
+
+    console.log(p.name, " ",p.id)
+
+    if (window.confirm(`Do you really want to delete ${p.name}?`)) {
+      personService
+      .deleteByID(p.id)
+      .then((personDeleted) => {
+        setPersons(persons.filter((person)=> person.id !== p.id))
+        alert(`${personDeleted.name} has been deleted succesfully...`)
+      })
+      .catch((error) => {
+        if(error.response.status===404){
+          alert("Error: Source Not found")
+        }
+      })
+    }
+  }
   const personsToShow = 
   !nameSearch ? persons : persons.filter(p => searchName(p.name))
 
+  console.log(personsToShow)
   return (
     <div>
       <h2>Phonebook</h2>
@@ -59,10 +99,10 @@ const App = () => {
         newNumber={newNumber}
         setNewName={setNewName}
         setNewNumber={setNewNumber}
-        handleAddName={handleAddName}
+        handleAddName={addNewPerson}
       />
 
-     <Persons personsToShow={personsToShow}/>
+     <Persons handleDelete = {deletePerson} personsToShow={personsToShow}/>
     </div>
   )
 }
@@ -90,22 +130,31 @@ const PersonForm = ({newName, newNumber, setNewName, setNewNumber, handleAddName
   )
 }
 
-const Persons = ({personsToShow}) =>{
+const Persons = ({personsToShow, handleDelete}) =>{
+
   return(
     <> 
     <h2>Numbers</h2>
       {personsToShow.map((p, index) => 
       <Person key= {index}
+        id = {p.id}
         name={p.name} 
-        number={p.number}/>
+        number={p.number}
+        handleDelete={handleDelete}/>
       )}
+
     </>
   )
 }
 
-const Person = ({index, name, number}) => {
+const Person = ({ name, number, id, handleDelete}) => {
+
   return(
-    <p >{name} {number}</p>
+    <div style={{display: 'flex', flexFlow: 'row', columnGap: '10px'}}>
+      <p >{name} {number}</p>
+      <button onClick={() => handleDelete({name, id})}
+      style={{backgroundColor: 'red', color: 'white', height:'30px'}}>Delete</button>
+    </div>
   )
 }
 export default App
