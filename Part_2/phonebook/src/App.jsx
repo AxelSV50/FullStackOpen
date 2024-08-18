@@ -1,12 +1,15 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
 import personService from './services/persons'
+import './index.css'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [nameSearch, setNameSearch] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() =>{
     personService.getAll().then(persons => setPersons(persons))
@@ -17,6 +20,7 @@ const App = () => {
 
     const p = persons.find(p => p.name === newName)
 
+    //Sin no existe se agrega
     if (!p){
 
       const newPerson = {name: newName, number: newNumber}
@@ -25,9 +29,14 @@ const App = () => {
       .create(newPerson)
       .then(personAdded =>{
         setPersons(persons.concat(personAdded))
+
+        setNotification({message: `${newPerson.name} was added succesfully`, type: 'success'})
+        setTimeout(() => setNotification(null), 5000)
+
         setNewName('')
         setNewNumber('')
         e.target.reset()
+
       })
       .catch(error =>{
         alert(`Error: ${error}`)
@@ -43,11 +52,21 @@ const App = () => {
         .then(() => {
 
           setPersons(persons.map(value =>value.id === p.id ? updatedPerson: value))
+
+          setNotification({message: `The number of ${updatedPerson.name} was updated succesfully`, type: 'success'})
+          setTimeout(() => setNotification(null), 5000)
+
           setNewName('')
           setNewNumber('')
           e.target.reset()
-
           })
+          .catch(error => {
+            setPersons(persons.filter(person => person.name !== newName))
+            setNotification({message: `${newName} has been removed from the server (error: ${error})`, type: 'error'})
+            setTimeout(() => setNotification(null), 5000)
+          })
+
+     
       }
     }
 
@@ -69,8 +88,6 @@ const App = () => {
 
   const deletePerson = (p) =>{
 
-    console.log(p.name, " ",p.id)
-
     if (window.confirm(`Do you really want to delete ${p.name}?`)) {
       personService
       .deleteByID(p.id)
@@ -88,10 +105,11 @@ const App = () => {
   const personsToShow = 
   !nameSearch ? persons : persons.filter(p => searchName(p.name))
 
-  console.log(personsToShow)
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification= {notification}/>
+
       <Filter setNameSearch={setNameSearch} nameSearch={nameSearch}/>
       <h2>Add a new</h2>
       <PersonForm
@@ -103,6 +121,7 @@ const App = () => {
       />
 
      <Persons handleDelete = {deletePerson} personsToShow={personsToShow}/>
+
     </div>
   )
 }
@@ -157,4 +176,21 @@ const Person = ({ name, number, id, handleDelete}) => {
     </div>
   )
 }
+const Notification = ({notification}) => {
+
+
+  if (!notification) {
+    return null
+  }
+
+  const typeClassName = notification.type==='success' ? 'notification-success' : 'notification-error'
+
+  return (
+
+    <div className= {typeClassName}>
+      {notification.message}
+    </div>
+  )
+}
+
 export default App
