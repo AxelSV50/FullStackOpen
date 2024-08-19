@@ -14,6 +14,7 @@ const App = () => {
   useEffect(() =>{
     personService.getAll().then(persons => setPersons(persons))
   }, [])
+
   const addNewPerson = (e) =>{
 
     e.preventDefault()
@@ -65,11 +66,8 @@ const App = () => {
             setNotification({message: `${newName} has been removed from the server (error: ${error})`, type: 'error'})
             setTimeout(() => setNotification(null), 5000)
           })
-
-     
       }
     }
-
   }
   const searchName = (name) =>{
 
