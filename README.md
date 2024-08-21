@@ -11,6 +11,7 @@ This repository contains the exercises from the Full Stack Open course organized
   - unicafe
   - part1: Introduction example from the course
 - `Part_2`: Communicating with server
+  - CountryData
   - courseinfo
   - phonebook
 - ...
